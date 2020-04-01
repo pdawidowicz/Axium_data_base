@@ -30,6 +30,7 @@ public class database{
     
     
     
+    
     public void database() throws SQLException{
         System.out.println("start");
         conn = DriverManager.getConnection(dbURL);
@@ -38,12 +39,33 @@ public class database{
         statement = conn.createStatement();
         System.out.println(statement);
     }
+    public void select_parametryzacja(){
+        String sql = "select * from test.dbo.logg WHERE Login = ?";
+        try(PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setString(1, "as");
+            try(ResultSet rs = st.executeQuery()) {
+                while(rs.next()) {
+                    System.out.println(rs);
+                    System.out.print(rs.getString(1)+"\t");
+                    System.out.print(rs.getString(2)+"\t");
+                    System.out.print(rs.getString(3)+"\t");
+                    System.out.print(rs.getString(4)+"\t");
+                    System.out.print(rs.getString(5)+"\t\n\r");
+                    
+                }
+            }
+			
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+    }
     
     List getString() throws SQLException{
 
         List<String> resultList = new ArrayList<>();
         ResultSet resultSet = null;
-        String selectSql = "select * from CDN_DEMO.CDN.TraElem";
+        String selectSql = "select * from test.dbo.logg";
         resultSet = statement.executeQuery(selectSql);
         while (resultSet.next()) {
             System.out.println(resultSet);
@@ -54,6 +76,12 @@ public class database{
     
     public void insert(String nazwa) throws SQLException{
         String sql = "INSERT INTO dbo.test (LP, nazwa) VALUES ('1234', '"+ nazwa +"');";
+        PreparedStatement st = conn.prepareStatement(sql);
+        st.executeUpdate();
+    }
+    
+    public void add_user(String id, String login, String pass, String name, String surname) throws SQLException{
+        String sql = "INSERT INTO test.dbo.logg (ID_user, Login, Password, Name, Surname) VALUES ('"+ id +"','"+ login +"', '"+ pass +"', '"+ name +"', '"+ surname +"');";
         PreparedStatement st = conn.prepareStatement(sql);
         st.executeUpdate();
     }
